@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>My Game</title>
+<style>
+body {
+  text-align:center;
+  background:#111;
+  color:white;
+  font-family:Arial;
+}
+button {
+  padding:20px;
+  font-size:20px;
+  border-radius:10px;
+}
+</style>
+</head>
+<body>
+
+<h1>💰 Моя первая игра</h1>
+<h2 id="score">0</h2>
+<button onclick="add()">Заработать</button>
+
+<script>
+let score = 0;
+function add(){
+  score++;
+  document.getElementById("score").innerText = score;
+}
+</script>
+
+</body>
+</html>
