@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<title>Shark Meat Game</title>
+<title>Shark Economy</title>
 
 <style>
 body{
@@ -11,26 +11,47 @@ body{
   background:linear-gradient(135deg,#001f3f,#003366,#000814);
   color:white;
   font-family:Arial;
-  margin-top:30px;
+  margin-top:20px;
 }
 
 h1{
-  font-size:28px;
+  font-size:26px;
 }
 
 #meat{
-  font-size:32px;
-  margin:15px;
+  font-size:28px;
   color:#ff4d4d;
+  margin:10px;
+}
+
+#level{
+  font-size:20px;
+  margin:5px;
+}
+
+#hungerBar{
+  width:200px;
+  height:20px;
+  background:#333;
+  margin:10px auto;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+#hungerFill{
+  height:100%;
+  width:100%;
+  background:#00ff99;
+  transition:0.3s;
 }
 
 img{
-  width:200px;
+  width:220px;
   transition:0.2s;
 }
 
 .eat{
-  transform:scale(1.2) rotate(5deg);
+  transform:scale(1.15) rotate(5deg);
 }
 
 button{
@@ -41,7 +62,7 @@ button{
   background:#ff3333;
   color:white;
   cursor:pointer;
-  margin-top:15px;
+  margin-top:10px;
   transition:0.2s;
 }
 
@@ -50,7 +71,7 @@ button:active{
 }
 
 .result{
-  margin-top:15px;
+  margin-top:10px;
   min-height:25px;
 }
 </style>
@@ -58,14 +79,19 @@ button:active{
 
 <body>
 
-<h1>🦈 SHARK FEEDER</h1>
+<h1>🦈 SHARK EMPIRE</h1>
 
+<div id="level">Уровень: 1</div>
 <div id="meat">Мясо: 0 🥩</div>
 
-<img id="shark" src="https://i.imgur.com/4AiXzf8.png">
+<div>Голод</div>
+<div id="hungerBar">
+  <div id="hungerFill"></div>
+</div>
+
+<img id="shark" src="PASTE_IMAGE_URL_HERE">
 
 <br>
-
 <button onclick="feed()">Покормить акулу</button>
 
 <div class="result" id="result"></div>
@@ -73,39 +99,72 @@ button:active{
 <script>
 
 let meat = parseInt(localStorage.getItem("meat")) || 0;
-document.getElementById("meat").innerText = "Мясо: " + meat + " 🥩";
+let level = parseInt(localStorage.getItem("level")) || 1;
+let hunger = parseInt(localStorage.getItem("hunger")) || 100;
+
+updateUI();
 
 function feed(){
 
   let shark = document.getElementById("shark");
   shark.classList.add("eat");
+  setTimeout(()=>{shark.classList.remove("eat")},200);
 
-  setTimeout(() => {
-    shark.classList.remove("eat");
-  }, 200);
+  let income = 5 * level;
+  meat += income;
+  hunger += 10;
 
-  let chance = Math.random();
+  if(hunger > 100) hunger = 100;
 
-  if(chance < 0.8){
-    meat += 5;
-    show("😋 Акула довольна! +5 мяса");
+  show("😋 Акула съела мясо +" + income);
+
+  checkLevel();
+  save();
+  updateUI();
+}
+
+function checkLevel(){
+  let needed = level * 200;
+  if(meat >= needed){
+    level++;
+    show("🔥 УРОВЕНЬ ПОВЫШЕН! Теперь доход больше!");
   }
-  else if(chance < 0.97){
-    meat += 25;
-    show("🔥 ГОЛОДНАЯ АКУЛА! +25 мяса!");
-  }
-  else{
-    meat = 0;
-    show("💀 Акула съела ВСЁ мясо!");
-  }
+}
 
-  localStorage.setItem("meat", meat);
+function updateUI(){
   document.getElementById("meat").innerText = "Мясо: " + meat + " 🥩";
+  document.getElementById("level").innerText = "Уровень: " + level;
+  document.getElementById("hungerFill").style.width = hunger + "%";
+
+  if(hunger > 60){
+    document.getElementById("hungerFill").style.background="#00ff99";
+  } else if(hunger > 30){
+    document.getElementById("hungerFill").style.background="#ffaa00";
+  } else {
+    document.getElementById("hungerFill").style.background="#ff0000";
+  }
 }
 
 function show(text){
   document.getElementById("result").innerText = text;
 }
+
+function save(){
+  localStorage.setItem("meat", meat);
+  localStorage.setItem("level", level);
+  localStorage.setItem("hunger", hunger);
+}
+
+setInterval(function(){
+  hunger -= 2;
+  if(hunger <= 0){
+    hunger = 0;
+    meat = Math.floor(meat * 0.9);
+    show("💀 Акула голодна! -10% мяса");
+  }
+  save();
+  updateUI();
+},3000);
 
 </script>
 
