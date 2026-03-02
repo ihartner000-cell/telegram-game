@@ -1,1 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>My Game</title>
 
+<style>
+body {
+  text-align:center;
+  background: linear-gradient(135deg,#1f1f1f,#111);
+  color:white;
+  font-family:Arial;
+  margin-top:50px;
+}
+
+h1 {
+  font-size:28px;
+}
+
+#score {
+  font-size:40px;
+  margin:20px;
+  color:#00ff99;
+}
+
+button {
+  padding:20px 40px;
+  font-size:20px;
+  border-radius:15px;
+  border:none;
+  background:#0088cc;
+  color:white;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+button:active {
+  transform:scale(0.9);
+  background:#00cc88;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💰 Моя первая игра</h1>
+<div id="score">0</div>
+<button onclick="add()">Заработать +5</button>
+
+<script>
+let score = localStorage.getItem("score");
+
+if(score === null){
+  score = 0;
+}
+
+document.getElementById("score").innerText = score;
+
+function add(){
+  score = parseInt(score) + 5;
+  localStorage.setItem("score", score);
+  document.getElementById("score").innerText = score;
+}
+</script>
+
+</body>
+</html>
