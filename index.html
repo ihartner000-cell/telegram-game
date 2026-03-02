@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<title>Shark Gamble</title>
+<title>Shark Meat Game</title>
 
 <style>
 body{
@@ -11,33 +11,38 @@ body{
   background:linear-gradient(135deg,#001f3f,#003366,#000814);
   color:white;
   font-family:Arial;
-  margin-top:40px;
+  margin-top:30px;
 }
 
 h1{
   font-size:28px;
 }
 
-#coins{
+#meat{
   font-size:32px;
   margin:15px;
-  color:#00e5ff;
+  color:#ff4d4d;
 }
 
-.stats{
-  margin:10px;
-  font-size:18px;
+img{
+  width:200px;
+  transition:0.2s;
+}
+
+.eat{
+  transform:scale(1.2) rotate(5deg);
 }
 
 button{
-  padding:20px 40px;
-  font-size:20px;
+  padding:15px 30px;
+  font-size:18px;
   border-radius:15px;
   border:none;
-  background:#00bfff;
+  background:#ff3333;
+  color:white;
   cursor:pointer;
+  margin-top:15px;
   transition:0.2s;
-  margin:10px;
 }
 
 button:active{
@@ -45,83 +50,61 @@ button:active{
 }
 
 .result{
-  margin-top:20px;
-  font-size:20px;
-  min-height:30px;
+  margin-top:15px;
+  min-height:25px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🦈 SHARK GAMBLE</h1>
+<h1>🦈 SHARK FEEDER</h1>
 
-<div id="coins">Монеты: 0</div>
+<div id="meat">Мясо: 0 🥩</div>
 
-<div class="stats">
-Обычные акулы: <span id="normal">0</span><br>
-Редкие акулы: <span id="rare">0</span><br>
-Мега-акулы: <span id="mega">0</span>
-</div>
+<img id="shark" src="https://i.imgur.com/4AiXzf8.png">
 
-<button onclick="hunt()">Поймать акулу</button>
+<br>
+
+<button onclick="feed()">Покормить акулу</button>
 
 <div class="result" id="result"></div>
 
 <script>
 
-let coins = parseInt(localStorage.getItem("coins")) || 0;
-let normal = parseInt(localStorage.getItem("normal")) || 0;
-let rare = parseInt(localStorage.getItem("rare")) || 0;
-let mega = parseInt(localStorage.getItem("mega")) || 0;
+let meat = parseInt(localStorage.getItem("meat")) || 0;
+document.getElementById("meat").innerText = "Мясо: " + meat + " 🥩";
 
-updateUI();
+function feed(){
 
-function hunt(){
+  let shark = document.getElementById("shark");
+  shark.classList.add("eat");
+
+  setTimeout(() => {
+    shark.classList.remove("eat");
+  }, 200);
+
   let chance = Math.random();
 
-  if(chance < 0.75){
-    normal++;
-    coins += 5;
-    show("🦈 Обычная акула +5 монет");
+  if(chance < 0.8){
+    meat += 5;
+    show("😋 Акула довольна! +5 мяса");
   }
-  else if(chance < 0.95){
-    rare++;
-    coins += 50;
-    show("💎 Редкая акула +50 монет!");
+  else if(chance < 0.97){
+    meat += 25;
+    show("🔥 ГОЛОДНАЯ АКУЛА! +25 мяса!");
   }
   else{
-    mega++;
-    let risk = Math.random();
-    if(risk < 0.5){
-      coins *= 2;
-      show("🔥 МЕГА-АКУЛА! Баланс УДВОЕН!");
-    } else {
-      coins = 0;
-      show("💀 МЕГА-АКУЛА СЪЕЛА ВСЁ! Баланс = 0");
-    }
+    meat = 0;
+    show("💀 Акула съела ВСЁ мясо!");
   }
 
-  save();
-  updateUI();
+  localStorage.setItem("meat", meat);
+  document.getElementById("meat").innerText = "Мясо: " + meat + " 🥩";
 }
 
 function show(text){
   document.getElementById("result").innerText = text;
-}
-
-function updateUI(){
-  document.getElementById("coins").innerText = "Монеты: " + coins;
-  document.getElementById("normal").innerText = normal;
-  document.getElementById("rare").innerText = rare;
-  document.getElementById("mega").innerText = mega;
-}
-
-function save(){
-  localStorage.setItem("coins", coins);
-  localStorage.setItem("normal", normal);
-  localStorage.setItem("rare", rare);
-  localStorage.setItem("mega", mega);
 }
 
 </script>
