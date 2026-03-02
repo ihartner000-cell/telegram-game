@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>Shark Gamble</title>
 
+<style>
+body{
+  text-align:center;
+  background:linear-gradient(135deg,#001f3f,#003366,#000814);
+  color:white;
+  font-family:Arial;
+  margin-top:40px;
+}
+
+h1{
+  font-size:28px;
+}
+
+#coins{
+  font-size:32px;
+  margin:15px;
+  color:#00e5ff;
+}
+
+.stats{
+  margin:10px;
+  font-size:18px;
+}
+
+button{
+  padding:20px 40px;
+  font-size:20px;
+  border-radius:15px;
+  border:none;
+  background:#00bfff;
+  cursor:pointer;
+  transition:0.2s;
+  margin:10px;
+}
+
+button:active{
+  transform:scale(0.9);
+}
+
+.result{
+  margin-top:20px;
+  font-size:20px;
+  min-height:30px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🦈 SHARK GAMBLE</h1>
+
+<div id="coins">Монеты: 0</div>
+
+<div class="stats">
+Обычные акулы: <span id="normal">0</span><br>
+Редкие акулы: <span id="rare">0</span><br>
+Мега-акулы: <span id="mega">0</span>
+</div>
+
+<button onclick="hunt()">Поймать акулу</button>
+
+<div class="result" id="result"></div>
+
+<script>
+
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let normal = parseInt(localStorage.getItem("normal")) || 0;
+let rare = parseInt(localStorage.getItem("rare")) || 0;
+let mega = parseInt(localStorage.getItem("mega")) || 0;
+
+updateUI();
+
+function hunt(){
+  let chance = Math.random();
+
+  if(chance < 0.75){
+    normal++;
+    coins += 5;
+    show("🦈 Обычная акула +5 монет");
+  }
+  else if(chance < 0.95){
+    rare++;
+    coins += 50;
+    show("💎 Редкая акула +50 монет!");
+  }
+  else{
+    mega++;
+    let risk = Math.random();
+    if(risk < 0.5){
+      coins *= 2;
+      show("🔥 МЕГА-АКУЛА! Баланс УДВОЕН!");
+    } else {
+      coins = 0;
+      show("💀 МЕГА-АКУЛА СЪЕЛА ВСЁ! Баланс = 0");
+    }
+  }
+
+  save();
+  updateUI();
+}
+
+function show(text){
+  document.getElementById("result").innerText = text;
+}
+
+function updateUI(){
+  document.getElementById("coins").innerText = "Монеты: " + coins;
+  document.getElementById("normal").innerText = normal;
+  document.getElementById("rare").innerText = rare;
+  document.getElementById("mega").innerText = mega;
+}
+
+function save(){
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("normal", normal);
+  localStorage.setItem("rare", rare);
+  localStorage.setItem("mega", mega);
+}
+
+</script>
+
+</body>
+</html>
